@@ -25,3 +25,17 @@ jobs:
 
       - name: Run unit tests
         run: ./gradlew test
+
+      - name: Run Static Analysis with PMD
+        run: ./gradlew pmdMain
+
+      - name: Upload PMD Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+            name: pmd-report
+            path: build/reports/pmd/
+
+      - name: Deploy to PaaS
+        if: github.ref == 'refs/heads/main'
+        run: echo "Deploying to Koyeb..."

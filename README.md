@@ -1,21 +1,31 @@
-### Refleksi 1
+### Refleksi
 
-Clean code dalam source code:
+Prinsip yang diterapkan
 
-- Menerapkan nama variable dan method yang memberi konteks yang jelas (Meaningful Name)
-- Method pada Controller hanya melakukan satu tugas (Single Responsibility)
+Single Responsibility Principle (SRP)
 
-Secure Coding:
-- Menerapkan input validasi saat update product
+Setiap kelas memiliki satu tujuannya sendiri, Contohnya kelas kelas repositori hanya bertanggung jawab untuk persistence logic, dan kelas servis menghandle logika bisnis, Controller menghandle HTTP request dan routing.
 
-Bisa lebih lanjut improve source code dengan menerapkan secure coding seperti Authentication, Authorization, Output data Encoding, dan Input data validation
+Open-Closed Principle (OCP)
 
-### Refleksi 2
+Service menggunakan interface untuk mendefinisikan behavior. Ini memungkinkan aplikasi untuk diextend dengan implementasi baru.
 
-Tidak ada angka pasti untuk jumlah unit test, prinsip utamanya adalah menguji seluruh alur logika. Unit testing bisa dirasa cukup jika mayoritas skenario alur logika sudah di uji dengan melihat persentase coverage testing.
+Liskov Substitution Principle (LSP)
 
-Isu yang mungkin bangkit dari pembuatan test tersebut adalah:
+Tidak ada kelas yang melanggar
 
-- Code duplication, jika mengulang logika setup yang sama pada beberapa kelas membuat kode sulit dipelihara apabila terdapat perubahan di set upnya
+Interface Segregation Principle (ISP)
 
-Improvisasi yang mungkin dilakukan adalah membuat sebuah base class yang berisi setup common dan test lain hanya melakukan extend ke class tersebut
+Projek ini menggunakan interface spesifik untuk domain yang spesifik. CarService menyediakan method yang unik terhadap manajemen mobil sedangkan ProductService menghandle aksi umum produk. Client yang berinteraksi dengan Car tidak akan dipaksa untuk mengimplementasi method dari productService
+
+Dependency Inversion Principle (DIP)
+
+Controller tingkat tinggi tidak depends on low-level-concrete implementations. Contohnya CarController inject CarService (interface) daripada implementasinya
+
+2. Advantages of the Current State
+
+   Testability: Karena CarController sekarang bergantung pada Abstraksi (CarService) dan bukan implementasi konkret, Kita dapat melakukan Unit Testing dengan sangat mudah menggunakan Mock tanpa menyentuh data layer yang asli.
+
+   Maintainability: Karena setiap kelas memiliki satu tanggung jawab, maka debugging akan jauh lebih cepat. Jika suatu fungsi berkaitan dengan penyimpanan mobil rusak, kita tahu pasti error pasti terjadi di CarRepository
+
+

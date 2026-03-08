@@ -4,9 +4,10 @@ import id.ac.ui.cs.advprog.eshop.model.Product;
 import id.ac.ui.cs.advprog.eshop.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -19,9 +20,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@ExtendWith(MockitoExtension.class)
 class ProductControllerTest {
 
     private MockMvc mockMvc;
+
+    private static final String PRODUCT_LIST_URL = "/product/list";
+    private static final String PRODUCT_ID = "eb558e9f";
+    private static final String FULL_PRODUCT_ID = "eb558e9f-1c39-460e-8860-71af6af63bd6";
 
     @Mock
     private ProductService productService;
@@ -31,7 +37,6 @@ class ProductControllerTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(productController).build();
     }
 
@@ -46,11 +51,11 @@ class ProductControllerTest {
     @Test
     void testCreateProductPost() throws Exception {
         mockMvc.perform(post("/product/create")
-                        .param("productId", "eb558e9f-1c39-460e-8860-71af6af63bd6")
+                        .param("productId", FULL_PRODUCT_ID)
                         .param("productName", "Sampo Cap Bambang")
                         .param("productQuantity", "10"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/product/list"));
+                .andExpect(redirectedUrl(PRODUCT_LIST_URL));
 
         verify(productService, times(1)).create(any(Product.class));
     }
@@ -63,7 +68,7 @@ class ProductControllerTest {
 
         when(productService.findAll()).thenReturn(allProducts);
 
-        mockMvc.perform(get("/product/list"))
+        mockMvc.perform(get(PRODUCT_LIST_URL))
                 .andExpect(status().isOk())
                 .andExpect(view().name("productList"))
                 .andExpect(model().attribute("products", allProducts));
@@ -72,11 +77,11 @@ class ProductControllerTest {
     @Test
     void testEditProductPage() throws Exception {
         Product product = new Product();
-        product.setProductId("eb558e9f");
+        product.setProductId(PRODUCT_ID);
 
-        when(productService.findById("eb558e9f")).thenReturn(product);
+        when(productService.findById(PRODUCT_ID)).thenReturn(product);
 
-        mockMvc.perform(get("/product/edit/eb558e9f"))
+        mockMvc.perform(get("/product/edit/" + PRODUCT_ID))
                 .andExpect(status().isOk())
                 .andExpect(view().name("editProduct"))
                 .andExpect(model().attribute("product", product));
@@ -85,21 +90,21 @@ class ProductControllerTest {
     @Test
     void testEditProductPost() throws Exception {
         mockMvc.perform(post("/product/edit")
-                        .param("productId", "eb558e9f")
+                        .param("productId", PRODUCT_ID)
                         .param("productName", "Sampo Cap Usep")
                         .param("productQuantity", "20"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/product/list"));
+                .andExpect(redirectedUrl(PRODUCT_LIST_URL));
 
         verify(productService, times(1)).update(any(Product.class));
     }
 
     @Test
     void testDeleteProduct() throws Exception {
-        mockMvc.perform(get("/product/delete/eb558e9f"))
+        mockMvc.perform(get("/product/delete/" + PRODUCT_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/product/list"));
+                .andExpect(redirectedUrl(PRODUCT_LIST_URL));
 
-        verify(productService, times(1)).delete("eb558e9f");
+        verify(productService, times(1)).delete(PRODUCT_ID);
     }
 }

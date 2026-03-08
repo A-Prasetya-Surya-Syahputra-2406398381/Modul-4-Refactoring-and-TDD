@@ -15,6 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class ProductRepositoryTest {
 
+    private static final String FULL_PRODUCT_ID = "eb558e9f-1c39-460e-8860-71af6af63bd6";
+    private static final String DELETE_ID = "id-akan-dihapus";
+    
     @InjectMocks
     ProductRepository productRepository;
     @BeforeEach
@@ -23,7 +26,7 @@ public class ProductRepositoryTest {
     @Test
     void testCreateAndFind() {
         Product product = new Product();
-        product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        product.setProductId(FULL_PRODUCT_ID);
         product.setProductName("Sampo Cap Bambang");
         product.setProductQuantity(100);
         productRepository.create(product);
@@ -45,7 +48,7 @@ public class ProductRepositoryTest {
     @Test
     void testFindAllIfMoreThanOneProduct() {
         Product product1 = new Product();
-        product1.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        product1.setProductId(FULL_PRODUCT_ID);
         product1.setProductName("Sampo Cap Bambang");
         product1.setProductQuantity(100);
         productRepository.create(product1);
@@ -68,14 +71,14 @@ public class ProductRepositoryTest {
     @Test
     void testEditProductSuccess() {
         Product product = new Product();
-        product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        product.setProductId(FULL_PRODUCT_ID);
         product.setProductName("Sampo Lama");
         product.setProductQuantity(100);
 
         productRepository.create(product);
 
         Product updatedProduct = new Product();
-        updatedProduct.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        updatedProduct.setProductId(FULL_PRODUCT_ID);
         updatedProduct.setProductName("Sampo Baru");
         updatedProduct.setProductQuantity(50);
 
@@ -85,7 +88,7 @@ public class ProductRepositoryTest {
         assertEquals("Sampo Baru", result.getProductName());
         assertEquals(50, result.getProductQuantity());
 
-        Product savedProduct = productRepository.findById("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        Product savedProduct = productRepository.findById(FULL_PRODUCT_ID);
 
         assertEquals("Sampo Baru", savedProduct.getProductName());
     }
@@ -111,16 +114,16 @@ public class ProductRepositoryTest {
     @Test
     void testDeleteProductSuccess() {
         Product product = new Product();
-        product.setProductId("id-akan-dihapus");
+        product.setProductId(DELETE_ID);
         product.setProductName("Barang Sementara");
 
         productRepository.create(product);
 
-        assertNotNull(productRepository.findById("id-akan-dihapus"));
+        assertNotNull(productRepository.findById(DELETE_ID));
 
-        productRepository.delete("id-akan-dihapus");
+        productRepository.delete(DELETE_ID);
 
-        Product result = productRepository.findById("id-akan-dihapus");
+        Product result = productRepository.findById(DELETE_ID);
         assertNull(result);
 
         Iterator<Product> iterator = productRepository.findAll();
