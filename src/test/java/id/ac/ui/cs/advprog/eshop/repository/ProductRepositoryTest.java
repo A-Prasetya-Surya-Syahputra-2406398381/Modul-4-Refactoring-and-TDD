@@ -143,4 +143,81 @@ public class ProductRepositoryTest {
         assertNotNull(result);
         assertEquals("Barang Aman", result.getProductName());
     }
+
+    @Test
+    void testCreateWithNullId() {
+        Product product = new Product();
+        product.setProductName("Product No ID");
+        product.setProductQuantity(10);
+
+        Product createdProduct = productRepository.create(product);
+
+        assertNotNull(createdProduct.getProductId());
+        assertFalse(createdProduct.getProductId().isEmpty());
+    }
+
+    @Test
+    void testCreateNullProduct() {
+        assertThrows(RuntimeException.class, () -> {
+            productRepository.create(null);
+        });
+    }
+
+    @Test
+    void testFindByIdNotFound() {
+        Product result = productRepository.findById("non-existent-id");
+        assertNull(result);
+    }
+
+    @Test
+    void testUpdateWithEmptyList() {
+        Product product = new Product();
+        product.setProductId("any-id");
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            productRepository.update(product);
+        });
+    }
+
+    @Test
+    void testDeleteEmptyList() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            productRepository.delete("any-id");
+        });
+    }
+
+    @Test
+    void testUpdateWithNullId() {
+        Product product = new Product();
+        product.setProductId("id-1");
+        productRepository.create(product);
+
+        Product updatedProduct = new Product();
+        updatedProduct.setProductId(null);
+
+        assertThrows(Exception.class, () -> {
+            productRepository.update(updatedProduct);
+        });
+    }
+
+    @Test
+    void testFindByIdProductNotFoundIteratedThroughAll() {
+        Product product1 = new Product();
+        product1.setProductId("id-1");
+        productRepository.create(product1);
+
+        Product product2 = new Product();
+        product2.setProductId("id-2");
+        productRepository.create(product2);
+
+        Product result = productRepository.findById("id-tidak-ada");
+
+        assertNull(result);
+    }
+
+    @Test
+    void testFindByIdEmptyList() {
+        Product result = productRepository.findById("sembarang-id");
+        assertNull(result);
+    }
 }
