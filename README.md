@@ -1,31 +1,12 @@
-### Refleksi
+1. TDD Flow Reflection (Percival, 2017)
 
-Prinsip yang diterapkan
+    - flow yang dilakukan TDD dengan membuat test untuk method method lalu melihat test tersebut gagal lalu mengimplementasikan kode minimum agar testnya pass sangat melatih disiplin
 
-Single Responsibility Principle (SRP)
+    - flow tersebut memastikan setiap kode di `OrderServiceImpl` didorong oleh kebutuhan spesifik yang diuji. Contohnya metode `updateStatus` diimplementasikan secara khusus untuk menangani pembaruan status yang berhasil sekaligus melempar `NoSuchElementException` untuk ID yang tidak ditemukan, sesuai dengan ekspektasi dari tes
 
-Setiap kelas memiliki satu tujuannya sendiri, Contohnya kelas kelas repositori hanya bertanggung jawab untuk persistence logic, dan kelas servis menghandle logika bisnis, Controller menghandle HTTP request dan routing.
-
-Open-Closed Principle (OCP)
-
-Service menggunakan interface untuk mendefinisikan behavior. Ini memungkinkan aplikasi untuk diextend dengan implementasi baru.
-
-Liskov Substitution Principle (LSP)
-
-Tidak ada kelas yang melanggar
-
-Interface Segregation Principle (ISP)
-
-Projek ini menggunakan interface spesifik untuk domain yang spesifik. CarService menyediakan method yang unik terhadap manajemen mobil sedangkan ProductService menghandle aksi umum produk. Client yang berinteraksi dengan Car tidak akan dipaksa untuk mengimplementasi method dari productService
-
-Dependency Inversion Principle (DIP)
-
-Controller tingkat tinggi tidak depends on low-level-concrete implementations. Contohnya CarController inject CarService (interface) daripada implementasinya
-
-2. Advantages of the Current State
-
-   Testability: Karena CarController sekarang bergantung pada Abstraksi (CarService) dan bukan implementasi konkret, Kita dapat melakukan Unit Testing dengan sangat mudah menggunakan Mock tanpa menyentuh data layer yang asli.
-
-   Maintainability: Karena setiap kelas memiliki satu tanggung jawab, maka debugging akan jauh lebih cepat. Jika suatu fungsi berkaitan dengan penyimpanan mobil rusak, kita tahu pasti error pasti terjadi di CarRepository
-
-
+2. Reflection on F.I.R.S.T. Principles
+   - Fast: penggunaan mockito untuk melakukan mocking pada `OrderRepository` menghindari operasi database yang lambat
+   - Independent: Setiap mode pengujian menggunakan data yang diinisialisasi ulang dalam blok `@BeforeEach` yang memastikan bahwa suatu hasil test independen dari tes lainnya
+   - Repeatable: Karena tidak ada dependency keluar, tes ini akan konsisten berhasil dimanapun dijalankan
+   - Self-Validating: Tes menggunakan <i>assertions</i> yang jelas. Hasilnya hanya ada dua yaitu success atau fail tanpa perlu interpretasi manual pada log
+   - Timely: Tes dibuat sebelum fungsionalitas diimplementasikan
