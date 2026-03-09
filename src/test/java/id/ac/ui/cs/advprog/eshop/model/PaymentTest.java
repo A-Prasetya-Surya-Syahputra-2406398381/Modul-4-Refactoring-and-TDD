@@ -11,6 +11,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class PaymentTest {
     Map<String, String> paymentData;
 
+    private final String PAYMENT_ID = "payment-1";
+    private final String PAYMENT_METHOD = "VOUCHER";
+
     @BeforeEach
     void setUp() {
         paymentData = new HashMap<>();
@@ -19,16 +22,16 @@ class PaymentTest {
 
     @Test
     void testCreatePaymentHappyPath() {
-        Payment payment = new Payment("payment-1", "VOUCHER", paymentData);
+        Payment payment = new Payment(PAYMENT_ID, PAYMENT_METHOD, paymentData);
 
-        assertEquals("payment-1", payment.getId());
-        assertEquals("VOUCHER", payment.getMethod());
+        assertEquals(PAYMENT_ID, payment.getId());
+        assertEquals(PAYMENT_METHOD, payment.getMethod());
         assertEquals(paymentData, payment.getPaymentData());
     }
 
     @Test
     void testSetStatusSuccessHappyPath() {
-        Payment payment = new Payment("payment-1", "VOUCHER", paymentData);
+        Payment payment = new Payment(PAYMENT_ID, PAYMENT_METHOD, paymentData);
         payment.setStatus("SUCCESS");
 
         assertEquals("SUCCESS", payment.getStatus());
@@ -36,44 +39,43 @@ class PaymentTest {
 
     @Test
     void testSetStatusRejectedHappyPath() {
-        Payment payment = new Payment("payment-1", "VOUCHER", paymentData);
+        Payment payment = new Payment(PAYMENT_ID, PAYMENT_METHOD, paymentData);
         payment.setStatus("REJECTED");
 
         assertEquals("REJECTED", payment.getStatus());
     }
 
-
     @Test
     void testCreatePaymentWithNullIdUnhappyPath() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Payment(null, "VOUCHER", paymentData);
+            new Payment(null, PAYMENT_METHOD, paymentData);
         });
     }
 
     @Test
     void testCreatePaymentWithEmptyIdUnhappyPath() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("", "VOUCHER", paymentData);
+            new Payment("", PAYMENT_METHOD, paymentData);
         });
     }
 
     @Test
     void testCreatePaymentWithNullMethodUnhappyPath() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("payment-1", null, paymentData);
+            new Payment(PAYMENT_ID, null, paymentData);
         });
     }
 
     @Test
     void testCreatePaymentWithNullPaymentDataUnhappyPath() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("payment-1", "VOUCHER", null);
+            new Payment(PAYMENT_ID, PAYMENT_METHOD, null);
         });
     }
 
     @Test
     void testSetInvalidStatusUnhappyPath() {
-        Payment payment = new Payment("payment-1", "VOUCHER", paymentData);
+        Payment payment = new Payment(PAYMENT_ID, PAYMENT_METHOD, paymentData);
 
         assertThrows(IllegalArgumentException.class, () -> {
             payment.setStatus("STATUS_TIDAK_JELAS");
