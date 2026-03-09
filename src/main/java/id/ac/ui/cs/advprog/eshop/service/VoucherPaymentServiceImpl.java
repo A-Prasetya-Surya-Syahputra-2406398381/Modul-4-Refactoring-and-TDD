@@ -21,25 +21,55 @@ public class VoucherPaymentServiceImpl implements VoucherPaymentService {
 
     @Override
     public Payment addPayment(Order order, String method, Map<String, String> paymentData) {
-        return null;
+        String paymentId = UUID.randomUUID().toString();
+        Payment payment = new Payment(paymentId, method, paymentData);
+
+        if (isValidVoucher(paymentData)) {
+            payment.setStatus("SUCCESS");
+        } else {
+            payment.setStatus("REJECTED");
+        }
+
+        orderMap.put(payment.getId(), order);
+        return paymentRepository.save(payment);
     }
 
     private boolean isValidVoucher(Map<String, String> paymentData) {
-        return false;
+        String voucherCode = paymentData.get("voucherCode");
+
+        // Cek null, panjang 16 karakter, dan diawali "ESHOP"
+        if (voucherCode == null || voucherCode.length() != 16 || !voucherCode.startsWith("ESHOP")) {
+            return false;
+        }
+
+        // Cek jumlah karakter numerik (harus tepat 8)
+        long numericCount = voucherCode.chars().filter(Character::isDigit).count();
+        return numericCount == 8;
     }
 
     @Override
     public Payment setStatus(Payment payment, String status) {
-        return null;
+        payment.setStatus(status);
+
+        Order order = orderMap.get(payment.getId());
+        if (order != null) {
+            if ("SUCCESS".equals(status)) {
+                order.setStatus("SUCCESS");
+            } else if ("REJECTED".equals(status)) {
+                order.setStatus("FAILED");
+            }
+        }
+
+        return paymentRepository.save(payment);
     }
 
     @Override
     public Payment getPayment(String paymentId) {
-        return null;
+        return paymentRepository.findById(paymentId);
     }
 
     @Override
     public List<Payment> getAllPayments() {
-        return null;
+        return paymentRepository.findAll();
     }
 }
