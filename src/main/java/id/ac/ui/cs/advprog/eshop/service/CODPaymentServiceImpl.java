@@ -21,25 +21,50 @@ public class CODPaymentServiceImpl implements CODPaymentService {
 
     @Override
     public Payment addPayment(Order order, String method, Map<String, String> paymentData) {
-        return null;
+        String paymentId = UUID.randomUUID().toString();
+        Payment payment = new Payment(paymentId, method, paymentData);
+
+        if (isValidCod(paymentData)) {
+            payment.setStatus("SUCCESS");
+        } else {
+            payment.setStatus("REJECTED");
+        }
+
+        orderMap.put(payment.getId(), order);
+        return paymentRepository.save(payment);
     }
 
     private boolean isValidCod(Map<String, String> paymentData) {
-        return false;
+        String address = paymentData.get("address");
+        String deliveryFee = paymentData.get("deliveryFee");
+
+        return address != null && !address.trim().isEmpty() &&
+                deliveryFee != null && !deliveryFee.trim().isEmpty();
     }
 
     @Override
     public Payment setStatus(Payment payment, String status) {
-        return null;
+        payment.setStatus(status);
+
+        Order order = orderMap.get(payment.getId());
+        if (order != null) {
+            if ("SUCCESS".equals(status)) {
+                order.setStatus("SUCCESS");
+            } else if ("REJECTED".equals(status)) {
+                order.setStatus("FAILED");
+            }
+        }
+
+        return paymentRepository.save(payment);
     }
 
     @Override
     public Payment getPayment(String paymentId) {
-        return null;
+        return paymentRepository.findById(paymentId);
     }
 
     @Override
     public List<Payment> getAllPayments() {
-        return null;
+        return paymentRepository.findAll();
     }
 }

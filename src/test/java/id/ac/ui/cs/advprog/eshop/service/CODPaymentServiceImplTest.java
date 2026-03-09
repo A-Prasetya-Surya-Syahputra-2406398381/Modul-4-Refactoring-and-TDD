@@ -22,10 +22,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class CodPaymentServiceImplTest {
+class CODPaymentServiceImplTest {
 
     @InjectMocks
-    CodPaymentServiceImpl codPaymentService;
+    CODPaymentServiceImpl codPaymentService;
 
     @Mock
     PaymentRepository paymentRepository;
