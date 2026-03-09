@@ -1,15 +1,18 @@
 package id.ac.ui.cs.advprog.eshop.service;
 
-import id.ac.ui.cs.advprog.eshop.model.Order;
-import id.ac.ui.cs.advprog.eshop.model.Payment;
-import id.ac.ui.cs.advprog.eshop.repository.PaymentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import id.ac.ui.cs.advprog.eshop.enums.OrderStatus;
+import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
+import id.ac.ui.cs.advprog.eshop.model.Order;
+import id.ac.ui.cs.advprog.eshop.model.Payment;
+import id.ac.ui.cs.advprog.eshop.repository.PaymentRepository;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -35,10 +38,10 @@ public class PaymentServiceImpl implements PaymentService {
 
         Order order = orderMap.get(payment.getId());
         if (order != null) {
-            if ("SUCCESS".equals(status)) {
-                order.setStatus("SUCCESS");
-            } else if ("REJECTED".equals(status)) {
-                order.setStatus("FAILED");
+            if (PaymentStatus.SUCCESS.name().equals(status)) {
+                order.setStatus(OrderStatus.SUCCESS.name());
+            } else if (PaymentStatus.REJECTED.name().equals(status)) {
+                order.setStatus(OrderStatus.FAILED.name());
             }
         }
 
